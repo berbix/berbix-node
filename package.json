@@ -1,0 +1,24 @@
+{
+  "name": "berbix",
+  "version": "0.0.1",
+  "description": "Node SDK for interacting with the Berbix API",
+  "main": "lib/berbix.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/berbix/berbix-node.git"
+  },
+  "keywords": [
+    "berbix",
+    "identity verification",
+    "api"
+  ],
+  "author": "Eric Levine <eric@berbix.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/berbix/berbix-node/issues"
+  },
+  "homepage": "https://berbix.com"
+}
