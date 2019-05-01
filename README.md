@@ -9,17 +9,17 @@ This Berbix Node library provides simple interfaces to interact with the Berbix 
     var berbix = require('berbix');
 
     var client = new berbix.Client({
-      clientId='your_client_id_here',
-      clientSecret='your_client_secret_here',
+      clientId: 'your_client_id_here',
+      clientSecret: 'your_client_secret_here',
     })
 
 ### Fetching user tokens
 
-    var userTokens = client.exchangeCode(code)
+    var userTokens = await client.exchangeCode(code)
 
 ### Fetching user data
 
-    client.fetchUser(userTokens)
+    var user = await client.fetchUser(userTokens)
 
 ### User tokens from storage
 
