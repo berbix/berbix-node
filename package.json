@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/berbix/berbix-node/issues"
   },
-  "homepage": "https://berbix.com"
+  "homepage": "https://berbix.com",
+  "engines": {
+    "node": ">=7.6.0"
+  }
 }
