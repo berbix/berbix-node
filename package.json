@@ -1,6 +1,6 @@
 {
   "name": "berbix",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node SDK for interacting with the Berbix API",
   "main": "lib/berbix.js",
   "scripts": {
