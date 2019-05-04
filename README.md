@@ -21,15 +21,15 @@ This Berbix Node library provides simple interfaces to interact with the Berbix 
 
     var user = await client.fetchUser(userTokens)
 
-### User tokens from storage
-
-    var refreshToken = '' // fetched from database
-    var userTokens = new UserTokens(refreshToken)
-
 ### Extract refresh token for storage
 
     var refreshToken = userTokens.refreshToken
     // store the token to your database
+
+### User tokens from storage
+
+    var refreshToken = '' // fetched from database
+    var userTokens = new UserTokens(refreshToken)
 
 ### Create a continuation
 
