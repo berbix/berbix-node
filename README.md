@@ -44,3 +44,7 @@ This Berbix Node library provides simple interfaces to interact with the Berbix 
       phone: "+14155555555", // previously verified phone number, if applicable
       customerUid: "interal_customer_uid", // ID for the user in internal database
     })
+
+## Publishing
+
+    npm publish
