@@ -11,6 +11,7 @@ This Berbix Node library provides simple interfaces to interact with the Berbix 
     var client = new berbix.Client({
       clientId: 'your_client_id_here',
       clientSecret: 'your_client_secret_here',
+      environment: 'production',
     })
 
 ### Fetching user tokens
