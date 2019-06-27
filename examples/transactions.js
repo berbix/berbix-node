@@ -4,10 +4,15 @@ var run = async function() {
   var client = new berbix.Client({
     clientId: process.env.BERBIX_DEMO_CLIENT_ID,
     clientSecret: process.env.BERBIX_DEMO_CLIENT_SECRET,
-    apiHost: process.env.BERBIX_DEMO_API_HOST
+    apiHost: process.env.BERBIX_DEMO_API_HOST,
+    //environment: 'sandbox',
   });
 
-  var tokens = await client.createUser({ customerUid: 'this is a customer uid' });
+  try {
+    var tokens = await client.createTransaction({ customerUid: 'this is a customer uid' });
+  } catch (e) {
+    console.log(e);
+  }
 
   console.log(tokens);
 
@@ -20,15 +25,21 @@ var run = async function() {
 
   var fetchedTokens = await client.exchangeCode(process.env.BERBIX_DEMO_CODE);
 
-  var toRefresh = new berbix.UserTokens(fetchedTokens.refreshToken);
+  console.log(fetchedTokens);
+
+  var toRefresh = new berbix.Tokens(fetchedTokens.refreshToken);
 
   try {
-    var user = await client.fetchUser(toRefresh);
+    var transaction = await client.fetchTransaction(toRefresh);
   } catch (e) {
     console.log(e);
   }
 
-  console.log(user);
+  console.log(transaction);
 }
 
-run();
+try {
+  run();
+} catch (e) {
+  console.log("error thrown", e);
+}
