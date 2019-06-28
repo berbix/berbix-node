@@ -27,7 +27,7 @@ var run = async function() {
 
   console.log(fetchedTokens);
 
-  var toRefresh = new berbix.Tokens(fetchedTokens.refreshToken);
+  var toRefresh = new berbix.Tokens.fromRefresh(fetchedTokens.refreshToken);
 
   try {
     var transaction = await client.fetchTransaction(toRefresh);
