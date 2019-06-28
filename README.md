@@ -101,8 +101,6 @@ The internal Berbix ID number associated with the transaction.
 
 The time at which the access and client tokens will expire.
 
-#### Methods
-
 #### Static methods
 
 ##### `fromRefresh(refreshToken: string): Tokens`
