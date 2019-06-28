@@ -6,11 +6,11 @@ This Berbix Node library provides simple interfaces to interact with the Berbix 
 
 If you are using NPM for package management
 
-    npm install berbix-node
+    npm install berbix
 
 If you are using Yarn for package management
 
-    yarn add berbix-node
+    yarn add berbix
 
 ## Usage
 
