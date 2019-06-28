@@ -43,7 +43,7 @@ If you are using Yarn for package management
  
 ## Reference
 
-### Client
+### `Client`
 
 #### Methods
 
@@ -77,7 +77,7 @@ Fetches all of the information associated with the transaction. If the user has 
 This is typically not needed to be called explicitly as it will be called by the higher-level
 SDK methods, but can be used to get fresh client or access tokens.
 
-### Tokens
+### `Tokens`
 
 #### Properties
 
