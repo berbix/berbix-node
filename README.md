@@ -79,6 +79,16 @@ Fetches all of the information associated with the transaction. If the user has 
 This is typically not needed to be called explicitly as it will be called by the higher-level
 SDK methods, but can be used to get fresh client or access tokens.
 
+##### `validateSignature(secret: string, body: string, header: string): boolean`
+
+This method validates that the content of the webhook has not been forged. This should be called for every endpoint that is configured to receive a webhook from Berbix.
+
+Parameters:
+
+ * `secret` - This is the secret associated with that webhook. NOTE: This is distinct from the client secret and can be found on the webhook configuration page of the dashboard.
+ * `body` - The full request body from the webhook. This should take the raw request body prior to parsing.
+ * `header` - The value in the 'X-Berbix-Signature' header.
+
 ### `Tokens`
 
 #### Properties
