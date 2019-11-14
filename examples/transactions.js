@@ -3,8 +3,7 @@ var berbix = require("../lib/berbix");
 var run = async function() {
   console.log("starting...");
   var client = new berbix.Client({
-    clientId: process.env.BERBIX_DEMO_CLIENT_ID,
-    clientSecret: process.env.BERBIX_DEMO_CLIENT_SECRET,
+    apiSecret: process.env.BERBIX_DEMO_CLIENT_SECRET,
     apiHost: process.env.BERBIX_DEMO_API_HOST
     //environment: 'sandbox',
   });
