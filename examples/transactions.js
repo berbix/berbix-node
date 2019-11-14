@@ -1,15 +1,33 @@
-var berbix = require('../lib/berbix');
+var berbix = require("../lib/berbix");
 
 var run = async function() {
+  console.log("starting...");
   var client = new berbix.Client({
     clientId: process.env.BERBIX_DEMO_CLIENT_ID,
     clientSecret: process.env.BERBIX_DEMO_CLIENT_SECRET,
-    apiHost: process.env.BERBIX_DEMO_API_HOST,
+    apiHost: process.env.BERBIX_DEMO_API_HOST
     //environment: 'sandbox',
   });
 
+  console.log("created client");
+
   try {
-    var tokens = await client.createTransaction({ customerUid: 'this is a customer uid' });
+    var tokens = await client.createTransaction({
+      customerUid: "this is a customer uid",
+      templateKey: "hi_6xP9A8y3Lzd2yoQFRRxlDZ_kqZAAP"
+    });
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    var tokens = await client.createTransaction({
+      customerUid: "this is a customer uid",
+      templateKey: "hi_6xP9A8y3Lzd2yoQFRRxlDZ_kqZAAP",
+      hostedOptions: {
+        completion_email: "eric@berbix.com"
+      }
+    });
   } catch (e) {
     console.log(e);
   }
@@ -36,7 +54,7 @@ var run = async function() {
   }
 
   console.log(transaction);
-}
+};
 
 try {
   run();
