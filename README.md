@@ -21,9 +21,7 @@ If you are using Yarn for package management
 
     // Construct the client, providing at least clientId and clientSecret
     var client = new berbix.Client({
-      clientId: 'your_client_id_here',
-      clientSecret: 'your_client_secret_here',
-      environment: 'production',
+      apiSecret: 'your_api_secret_here',
     })
 
 ### Create a transaction
@@ -41,7 +39,7 @@ If you are using Yarn for package management
 ### Fetch transaction data
 
     var transactionData = await client.fetchTransaction(transactionTokens)
- 
+
 ## Reference
 
 ### `Client`
@@ -52,10 +50,8 @@ If you are using Yarn for package management
 
 Supported options:
 
- * `clientId` (required) - The client ID that can be found in your Berbix Dashboard.
- * `clientSecret` (required) - The client secret that can be found in your Berbix Dashboard.
- * `environment` - Which environment the client uses, defaults to production.
- * `httpClient` - An optional override for the default Node HTTP client.
+- `apiSecret` (required) - The API secret that can be found in your Berbix Dashboard.
+- `httpClient` - An optional override for the default Node HTTP client.
 
 ##### `createTransaction(options): Tokens`
 
@@ -65,10 +61,10 @@ currently active user session.
 
 Supported options:
 
- * `email` - Previously verified email address for a user.
- * `phone` - Previously verified phone number for a user.
- * `customerUid` - An ID or identifier for the user in your system.
- * `templateKey` - The template key for this transaction.
+- `email` - Previously verified email address for a user.
+- `phone` - Previously verified phone number for a user.
+- `customerUid` - An ID or identifier for the user in your system.
+- `templateKey` - The template key for this transaction.
 
 ##### `fetchTransaction(tokens: Tokens): object`
 
@@ -85,9 +81,9 @@ This method validates that the content of the webhook has not been forged. This 
 
 Parameters:
 
- * `secret` - This is the secret associated with that webhook. NOTE: This is distinct from the client secret and can be found on the webhook configuration page of the dashboard.
- * `body` - The full request body from the webhook. This should take the raw request body prior to parsing.
- * `header` - The value in the 'X-Berbix-Signature' header.
+- `secret` - This is the secret associated with that webhook. NOTE: This is distinct from the client secret and can be found on the webhook configuration page of the dashboard.
+- `body` - The full request body from the webhook. This should take the raw request body prior to parsing.
+- `header` - The value in the 'X-Berbix-Signature' header.
 
 ### `Tokens`
 
