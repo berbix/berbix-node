@@ -19,7 +19,7 @@ If you are using Yarn for package management
     // Import the Berbix Node library
     var berbix = require('berbix');
 
-    // Construct the client, providing at least clientId and clientSecret
+    // Construct the client, providing your API secret
     var client = new berbix.Client({
       apiSecret: 'your_api_secret_here',
     })
