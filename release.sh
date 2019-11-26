@@ -12,5 +12,5 @@ git commit -m "Updating Berbix Node SDK version to $VERSION"
 git tag -a $VERSION -m "Version $VERSION"
 git push --follow-tags
 
-npm run build
+#npm run build
 npm publish

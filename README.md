@@ -81,9 +81,13 @@ This method validates that the content of the webhook has not been forged. This 
 
 Parameters:
 
-- `secret` - This is the secret associated with that webhook. NOTE: This is distinct from the client secret and can be found on the webhook configuration page of the dashboard.
+- `secret` - This is the secret associated with that webhook. NOTE: This is distinct from the API secret and can be found on the webhook configuration page of the dashboard.
 - `body` - The full request body from the webhook. This should take the raw request body prior to parsing.
 - `header` - The value in the 'X-Berbix-Signature' header.
+
+##### `deleteTransaction(tokens: Tokens): void`
+
+Permanently deletes all submitted data associated with the transaction corresponding to the tokens provided.
 
 ### `Tokens`
 

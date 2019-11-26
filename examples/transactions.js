@@ -53,6 +53,12 @@ var run = async function() {
   }
 
   console.log(transaction);
+
+  try {
+    console.log(await client.deleteTransaction(tokens));
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 try {
