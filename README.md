@@ -26,8 +26,8 @@ If you are using Yarn for package management
 
 ### Create a transaction
 
-    var transactionTokens = client.createTransaction({
-      customerUid: "interal_customer_uid", // ID for the user in internal database
+    var transactionTokens = await client.createTransaction({
+      customerUid: "internal_customer_uid", // ID for the user in internal database
       templateKey: "your_template_key", // Template key for this transaction
     })
 
@@ -88,6 +88,24 @@ Parameters:
 ##### `deleteTransaction(tokens: Tokens): void`
 
 Permanently deletes all submitted data associated with the transaction corresponding to the tokens provided.
+
+##### `updateTransaction(tokens: Tokens, action: string, note: string): object`
+
+Changes a transaction's "action", for example upon review in your systems. Returns the updated transaction upon success.
+
+Parameters:
+
+- `action` - Action taken on the transaction. Typically this will either be "accept" or "reject".
+- `note` - An optional note explaining the action taken.
+
+##### `overrideTransaction(tokens: Tokens, response_payload: string, flags: string): void`
+
+Completes a previously created transaction, and overrides its return payload and flags to match the provided parameters.
+
+Parameters:
+
+- `response_payload` - A string describing the payload type to return when fetching transaction metadata, e.g. "us-dl". See [our testing guide](https://docs.berbix.com/docs/testing) for possible options.
+- `flags` - An optional list of flags to associate with the transaction (independent of the payload's contents), e.g. ["id_under_18", "id_under_21"]. See [our flags documentation](https://docs.berbix.com/docs/id-flags) for a list of flags.
 
 ### `Tokens`
 
