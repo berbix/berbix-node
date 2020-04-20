@@ -26,8 +26,8 @@ If you are using Yarn for package management
 
 ### Create a transaction
 
-    var transactionTokens = client.createTransaction({
-      customerUid: "interal_customer_uid", // ID for the user in internal database
+    var transactionTokens = await client.createTransaction({
+      customerUid: "internal_customer_uid", // ID for the user in internal database
       templateKey: "your_template_key", // Template key for this transaction
     })
 
@@ -53,7 +53,7 @@ Supported options:
 - `apiSecret` (required) - The API secret that can be found in your Berbix Dashboard.
 - `httpClient` - An optional override for the default Node HTTP client.
 
-##### `createTransaction(options): Tokens`
+##### `createTransaction(options: object): Tokens`
 
 Creates a transaction within Berbix to initialize the client SDK. Typically after creating
 a transaction, you will want to store the refresh token in your database associated with the
@@ -88,6 +88,24 @@ Parameters:
 ##### `deleteTransaction(tokens: Tokens): void`
 
 Permanently deletes all submitted data associated with the transaction corresponding to the tokens provided.
+
+##### `updateTransaction(tokens: Tokens, parameters: object): object`
+
+Changes a transaction's "action", for example upon review in your systems. Returns the updated transaction upon success.
+
+Parameters:
+
+- `action: object` - A string describing the action taken on the transaction. Typically this will either be "accept" or "reject".
+- `note: string` - A string containing an optional note explaining the action taken.
+
+##### `overrideTransaction(tokens: Tokens, parameters: object): void`
+
+Completes a previously created transaction, and overrides its return payload and flags to match the provided parameters.
+
+Parameters:
+
+- `responsePayload: string` - A string describing the payload type to return when fetching transaction metadata, e.g. "us-dl". See [our testing guide](https://docs.berbix.com/docs/testing) for possible options.
+- `flags: string[]` - An optional list of flags to associate with the transaction (independent of the payload's contents), e.g. ["id_under_18", "id_under_21"]. See [our flags documentation](https://docs.berbix.com/docs/id-flags) for a list of flags.
 
 ### `Tokens`
 
