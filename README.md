@@ -53,7 +53,7 @@ Supported options:
 - `apiSecret` (required) - The API secret that can be found in your Berbix Dashboard.
 - `httpClient` - An optional override for the default Node HTTP client.
 
-##### `createTransaction(options): Tokens`
+##### `createTransaction(options: object): Tokens`
 
 Creates a transaction within Berbix to initialize the client SDK. Typically after creating
 a transaction, you will want to store the refresh token in your database associated with the
