@@ -89,16 +89,16 @@ Parameters:
 
 Permanently deletes all submitted data associated with the transaction corresponding to the tokens provided.
 
-##### `updateTransaction(tokens: Tokens, action: string, note: string): object`
+##### `updateTransaction(tokens: Tokens, parameters: object): object`
 
 Changes a transaction's "action", for example upon review in your systems. Returns the updated transaction upon success.
 
 Parameters:
 
-- `action` - Action taken on the transaction. Typically this will either be "accept" or "reject".
-- `note` - An optional note explaining the action taken.
+- `action` - A string describing the action taken on the transaction. Typically this will either be "accept" or "reject".
+- `note` - A string containing an optional note explaining the action taken.
 
-##### `overrideTransaction(tokens: Tokens, response_payload: string, flags: string): void`
+##### `overrideTransaction(tokens: Tokens, parameters: object): void`
 
 Completes a previously created transaction, and overrides its return payload and flags to match the provided parameters.
 
