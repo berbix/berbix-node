@@ -95,7 +95,7 @@ Changes a transaction's "action", for example upon review in your systems. Retur
 
 Parameters:
 
-- `action: object` - A string describing the action taken on the transaction. Typically this will either be "accept" or "reject".
+- `action: string` - A string describing the action taken on the transaction. Typically this will either be "accept" or "reject".
 - `note: string` - A string containing an optional note explaining the action taken.
 
 ##### `overrideTransaction(tokens: Tokens, parameters: object): void`
