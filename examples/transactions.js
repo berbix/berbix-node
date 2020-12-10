@@ -24,7 +24,7 @@ var run = async function () {
       customerUid: "this is a customer uid",
       templateKey: "hi_6xP9A8y3Lzd2yoQFRRxlDZ_kqZAAP",
       hostedOptions: {
-        completionEmail: "eric@berbix.com",
+        completion_email: "eric@berbix.com",
       },
     });
   } catch (e) {
