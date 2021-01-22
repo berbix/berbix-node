@@ -131,9 +131,9 @@ This is the long-lived token that allows you to create new tokens after the shor
 
 The internal Berbix ID number associated with the transaction.
 
-##### `expiry: Date`
+##### `expiry: number`
 
-The time at which the access and client tokens will expire.
+The Unix timestamp in seconds at which the access and client tokens will expire.
 
 #### Static methods
 
