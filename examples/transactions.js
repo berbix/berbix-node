@@ -22,15 +22,25 @@ var run = async function () {
     var tokens = await client.createTransaction({
       customerUid: "this is a customer uid",
       templateKey: "hi_6xP9A8y3Lzd2yoQFRRxlDZ_kqZAAP",
-      hostedOptions: {
-        completionEmail: "eric@berbix.com",
-      },
     });
   } catch (e) {
     console.log(e);
   }
-
   console.log(tokens);
+
+  try {
+    var hostedTransactionResponse = await client.createHostedTransaction({
+      customerUid: "this is a customer uid",
+      templateKey: "hi_6xP9A8y3Lzd2yoQFRRxlDZ_kqZAAP",
+      hostedOptions: {
+        completionEmail: "andrew@berbix.com",
+      },
+    })
+  } catch (e) {
+    console.log(e)
+  }
+
+  console.log(hostedTransactionResponse)
 
   try {
     console.log(await client.deleteTransaction(tokens));
