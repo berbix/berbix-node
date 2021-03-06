@@ -18,14 +18,6 @@ var run = async function () {
     console.log(e);
   }
 
-  try {
-    var tokens = await client.createTransaction({
-      customerUid: "this is a customer uid",
-      templateKey: "hi_6xP9A8y3Lzd2yoQFRRxlDZ_kqZAAP",
-    });
-  } catch (e) {
-    console.log(e);
-  }
   console.log(tokens);
 
   try {
@@ -35,12 +27,12 @@ var run = async function () {
       hostedOptions: {
         completionEmail: "andrew@berbix.com",
       },
-    })
+    });
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 
-  console.log(hostedTransactionResponse)
+  console.log(hostedTransactionResponse);
 
   try {
     console.log(await client.deleteTransaction(tokens));
