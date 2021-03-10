@@ -70,6 +70,7 @@ Supported options:
   - `redirectUrl` - URL to redirect the user to after they complete the transaction. If not specified, the URL specified in the Berbix dashboard will be used instead.
 
 ##### `createHostedTransaction(options : object): object`
+
 Creates a hosted transaction within Berbix to initialize the client SDK. This works the same as create_transaction except that it returns an explicit `hosted_url` for hosted transactions.
 
 ##### `fetchTransaction(tokens: Tokens): object`

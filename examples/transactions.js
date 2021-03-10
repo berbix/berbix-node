@@ -36,11 +36,11 @@ var run = async function () {
 
   try {
     var fetchResponse = await client.fetchTransaction(tokens);
-    } catch (e) {
-      console.log(e);
-    }
+  } catch (e) {
+    console.log(e);
+  }
 
-    console.log(fetchResponse);
+  console.log(fetchResponse);
 
   try {
     console.log(await client.deleteTransaction(tokens));
