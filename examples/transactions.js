@@ -35,6 +35,14 @@ var run = async function () {
   console.log(hostedTransactionResponse);
 
   try {
+    var fetchResponse = await client.fetchTransaction(tokens);
+    } catch (e) {
+      console.log(e);
+    }
+
+    console.log(fetchResponse);
+
+  try {
     console.log(await client.deleteTransaction(tokens));
     console.log(
       await client.deleteTransaction(hostedTransactionResponse.tokens)
