@@ -71,7 +71,7 @@ Supported options:
 
 ##### `createHostedTransaction(options : object): object`
 
-Creates a hosted transaction within Berbix to initialize the client SDK. This works the same as create_transaction except that it returns an explicit `hosted_url` for hosted transactions.
+Creates a hosted transaction within Berbix to initialize the client SDK. This works the same as `createTransaction()` except that the object returned includes an explicit `hostedUrl` property for hosted transactions.
 
 ##### `fetchTransaction(tokens: Tokens): object`
 
