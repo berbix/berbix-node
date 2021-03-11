@@ -65,9 +65,13 @@ Supported options:
 - `phone` - Previously verified phone number for a user.
 - `customerUid` - An ID or identifier for the user in your system.
 - `templateKey` - The template key for this transaction.
-- `hostedOptions` - Optional configuration object for creating hosted transactions. The `hostedOptions` object can optionally include the following fields:
+- Deprecated: `hostedOptions` - Optional configuration object for creating hosted transactions. The `hostedOptions` object can optionally include the following fields:
   - `completionEmail` - Email address to which completion alerts will be sent for this transaction.
   - `redirectUrl` - URL to redirect the user to after they complete the transaction. If not specified, the URL specified in the Berbix dashboard will be used instead.
+
+##### `createHostedTransaction(options : object): {tokens: Tokens, hostedUrl: string}`
+
+Creates a hosted transaction within Berbix to initialize the client SDK. This works the same as `createTransaction()` except that the object returned includes an explicit `hostedUrl` property for hosted transactions.
 
 ##### `fetchTransaction(tokens: Tokens): object`
 
@@ -131,9 +135,9 @@ This is the long-lived token that allows you to create new tokens after the shor
 
 The internal Berbix ID number associated with the transaction.
 
-##### `expiry: Date`
+##### `expiry: number`
 
-The time at which the access and client tokens will expire.
+The Unix timestamp in seconds at which the access and client tokens will expire.
 
 #### Static methods
 

@@ -5,7 +5,6 @@ var run = async function () {
   var client = new berbix.Client({
     apiSecret: process.env.BERBIX_DEMO_CLIENT_SECRET,
     apiHost: process.env.BERBIX_DEMO_API_HOST,
-    //environment: 'sandbox',
   });
 
   console.log("created client");
@@ -19,43 +18,35 @@ var run = async function () {
     console.log(e);
   }
 
+  console.log(tokens);
+
   try {
-    var tokens = await client.createTransaction({
+    var hostedTransactionResponse = await client.createHostedTransaction({
       customerUid: "this is a customer uid",
       templateKey: "hi_6xP9A8y3Lzd2yoQFRRxlDZ_kqZAAP",
       hostedOptions: {
-        completionEmail: "eric@berbix.com",
+        completionEmail: "andrew@berbix.com",
       },
     });
   } catch (e) {
     console.log(e);
   }
 
-  console.log(tokens);
+  console.log(hostedTransactionResponse);
 
   try {
-    var continuation = await client.createContinuation(tokens);
-    console.log(continuation);
+    var fetchResponse = await client.fetchTransaction(tokens);
   } catch (e) {
     console.log(e);
   }
 
-  var fetchedTokens = await client.exchangeCode(process.env.BERBIX_DEMO_CODE);
-
-  console.log(fetchedTokens);
-
-  var toRefresh = new berbix.Tokens.fromRefresh(fetchedTokens.refreshToken);
-
-  try {
-    var transaction = await client.fetchTransaction(toRefresh);
-  } catch (e) {
-    console.log(e);
-  }
-
-  console.log(transaction);
+  console.log(fetchResponse);
 
   try {
     console.log(await client.deleteTransaction(tokens));
+    console.log(
+      await client.deleteTransaction(hostedTransactionResponse.tokens)
+    );
   } catch (e) {
     console.log(e);
   }
