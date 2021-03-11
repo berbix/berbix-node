@@ -69,7 +69,7 @@ Supported options:
   - `completionEmail` - Email address to which completion alerts will be sent for this transaction.
   - `redirectUrl` - URL to redirect the user to after they complete the transaction. If not specified, the URL specified in the Berbix dashboard will be used instead.
 
-##### `createHostedTransaction(options : object): object`
+##### `createHostedTransaction(options : object): {tokens: Tokens, hostedUrl: string}`
 
 Creates a hosted transaction within Berbix to initialize the client SDK. This works the same as `createTransaction()` except that the object returned includes an explicit `hostedUrl` property for hosted transactions.
 
