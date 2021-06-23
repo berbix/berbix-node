@@ -24,6 +24,20 @@ If you are using Yarn for package management
       apiSecret: 'your_api_secret_here',
     })
 
+#### Using a custom HTTP agent
+
+    var berbix = require('berbix');
+    var https = require('https');
+
+    // Create a custom HTTP agent
+    var agent = new https.Agent({ timeout: 10000 });
+
+    // Construct the client, providing your API secret and a custom agent
+    var client = new berbix.Client({
+      apiSecret: 'your_api_secret_here',
+      httpAgent: agent,
+    })
+
 ### Create a transaction
 
     var transactionTokens = await client.createTransaction({
