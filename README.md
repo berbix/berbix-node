@@ -115,6 +115,26 @@ Parameters:
 - `flags: string[]` - An optional list of flags to associate with the transaction (independent of the payload's contents), e.g. ["id_under_18", "id_under_21"]. See [our flags documentation](https://docs.berbix.com/docs/id-flags) for a list of flags.
 - `overrideFields: { string: string }` - An optional mapping from a [transaction field](https://docs.berbix.com/reference#gettransactionmetadata) to the desired override value, e.g. `params.overrideFields = { "date_of_birth": "2000-12-09" } `
 
+##### `fetchDomains(): object[]`
+
+Fetches all domains that are currently allowed to serve Berbix Verify for this account.
+
+##### `createDomain(domainName: string): object`
+
+Add a domain to the list of domains allowed to serve the Berbix Verify flow for this account.
+
+Parameters:
+
+- `domainName: string` The string representing the domain to add (which may contain wildcards) to the list of allowed domains.
+
+##### `deleteDomain(id: number): object`
+
+Delete a domain from the list of domains allowed to serve the Berbix Verify flow for this account.
+
+Parameters:
+
+- `id: number` The integer representing the ID of the domain (as returned from fetchDomains) to remove.
+
 ### `Tokens`
 
 #### Properties
