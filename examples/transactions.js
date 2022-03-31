@@ -8,7 +8,9 @@ async function uploadPassport() {
     const tokens = await client.createApiOnlyTransaction({
       customerUid: "example upload UID",
       templateKey: process.env.BERBIX_TEMPLATE_KEY,
-      apiOnlyOpts: {idType: "P"}
+      apiOnlyOpts: {idType: "P"},
+      // TODO(chris) remove after testing
+      consentsToAutomatedFacialRecognition: true,
     });
 
     const passportFilePath = process.env.BERBIX_EXAMPLE_PASSPORT_PATH;
