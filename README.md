@@ -4,41 +4,48 @@ This Berbix Node library provides simple interfaces to interact with the Berbix 
 
 ## Installation
 
-If you are using NPM for package management
+This SDK requires Node version 7.10.1 or greater.
 
-    npm install berbix
+If you are using NPM for package management
+```shell
+npm install berbix
+```
 
 If you are using Yarn for package management
-
-    yarn add berbix
-
+```shell
+yarn add berbix
+```
 ## Usage
 
 ### Constructing a client
+```js
+// Import the Berbix Node library
+var berbix = require('berbix');
 
-    // Import the Berbix Node library
-    var berbix = require('berbix');
-
-    // Construct the client, providing your API secret
-    var client = new berbix.Client({
-      apiSecret: 'your_api_secret_here',
-    })
+// Construct the client, providing your API secret
+var client = new berbix.Client({
+  apiSecret: 'your_api_secret_here',
+})
+```
 
 ### Create a transaction
-
-    var transactionTokens = await client.createTransaction({
-      customerUid: "internal_customer_uid", // ID for the user in internal database
-      templateKey: "your_template_key", // Template key for this transaction
-    })
+```js
+var transactionTokens = await client.createTransaction({
+  customerUid: "internal_customer_uid", // ID for the user in internal database
+  templateKey: "your_template_key", // Template key for this transaction
+})
+```
 
 ### Create tokens from refresh token
-
-    // Load refresh token from database
-    var transactionTokens = berbix.Tokens.fromRefresh(refreshToken)
+```js
+// Load refresh token from database
+var transactionTokens = berbix.Tokens.fromRefresh(refreshToken)
+```
 
 ### Fetch transaction data
-
-    var transactionData = await client.fetchTransaction(transactionTokens)
+```js
+var transactionData = await client.fetchTransaction(transactionTokens)
+```
 
 ## Reference
 
@@ -46,12 +53,16 @@ If you are using Yarn for package management
 
 #### Methods
 
-##### `constructor(options)`
+##### `constructor(options: object)`
 
-Supported options:
+Supported `options` properties:
 
 - `apiSecret` (required) - The API secret that can be found in your Berbix Dashboard.
-- `httpClient` - An optional override for the default Node HTTP client.
+- `httpClient` - An optional override for the default HTTP client. The client should have a `request` method with the following
+  signature:
+  ```
+  request(host: string, method: string, path: string, headers: object, data: object): Promise<{statusCode: number, parsedBody: object}>
+  ```
 
 ##### `createTransaction(options: object): Tokens`
 
@@ -72,6 +83,16 @@ Supported options:
 ##### `createHostedTransaction(options : object): {tokens: Tokens, hostedUrl: string}`
 
 Creates a hosted transaction within Berbix to initialize the client SDK. This works the same as `createTransaction()` except that the object returned includes an explicit `hostedUrl` property for hosted transactions.
+
+##### `createApiOnlyTransaction(options: object): Tokens`
+Similar to `createTransaction()`, but used to create a transaction to be used as part of an API-only transaction.
+
+Supported options:
+- `customerUid` - An ID or identifier for the user in your system.
+- `templateKey` - The template key for this transaction.
+- `apiOnlyOpts` - Object with the following properties
+  - `idType` - (Optional) the type of ID that will be uploaded for this transaction. You can see the supported values in [API documentation](https://docs.berbix.com/reference/createtransaction) for the `api_only_options` under the body params for creating a transaction.
+  - `idCountry` - (Optional) the two-letter country code (ISO 3166-1 alpha-2) for the country that issued the ID that will be uploaded.
 
 ##### `fetchTransaction(tokens: Tokens): object`
 
@@ -112,8 +133,29 @@ Completes a previously created transaction, and overrides its return payload and
 Parameters:
 
 - `responsePayload: string` - A string describing the payload type to return when fetching transaction metadata, e.g. "us-dl". See [our testing guide](https://docs.berbix.com/docs/testing) for possible options.
-- `flags: string[]` - An optional list of flags to associate with the transaction (independent of the payload's contents), e.g. ["id_under_18", "id_under_21"]. See [our flags documentation](https://docs.berbix.com/docs/id-flags) for a list of flags.
+- `flags: string[]` - An optional list of flags to associate with the transaction (independent of the payload's contents), e.g. ["id_under_18", "id_under_21"]. See [our flags documentation][flags-docs] for a list of flags.
 - `overrideFields: { string: string }` - An optional mapping from a [transaction field](https://docs.berbix.com/reference#gettransactionmetadata) to the desired override value, e.g. `params.overrideFields = { "date_of_birth": "2000-12-09" } `
+
+#### `uploadImage(tokens: Tokens, imageUploadOpts: ImageUploadOpts): { nextStep: string, previewFlags: string[] }`
+
+Upload an image for a transaction as part of an [API-only integration](https://docs.berbix.com/docs/api-only-integration-guide).
+The `images` property of the `imageUploadOpts` is required.
+
+The returned object will have the following properties if the image could be processed by the API and the API returns a 200 status code:
+ - `nextStep: string` -  A string indicating what the next upload expected by the API is. See the [API documentation for uploads][upload-docs].
+ - `issues: string[]` - A list of issues detected with the image. This can be used to understand why an image was not accepted
+    and potentially coach end users on taking another photo if the `nextStep` indicates that another photo of the same subject
+    should be uploaded again. See the [API-Only Integration Guide](https://docs.berbix.com/docs/api-only-integration-guide#issues)
+    for a list of potential issues.
+ - `issueDetails: IssueDetails` - Extra details on the issue(s) detected. See [IssueDetails](#issuedetails) below.
+
+This method may throw an object containing the following properties if there was an error uploading the image:
+ - `status: number` - The HTTP status code returned by the API. As documented in [documentation for uploads endpoint][upload-docs],
+   different 4XX status codes can indicate different problems with the upload, so thrown objects should be caught and
+   the `status` property inspected by the caller to determine how to proceed.
+ - `error: string` - An error message.
+ - `nextStep: string | undefined` - Only present for 409 ("Conflict") responses. Indicates the next expected step. See the [API documentation for uploads][upload-docs].
+ - `response: object` - The parsed JSON response body from the API, as [described in the documentation for the endpoint][upload-docs].
 
 ### `Tokens`
 
@@ -145,6 +187,47 @@ The Unix timestamp in seconds at which the access and client tokens will expire.
 
 Creates a tokens object from a refresh token, which can be passed to higher-level SDK methods. The SDK will handle refreshing the tokens for accessing relevant data.
 
-## Publishing
+### `ImageUploadOpts`
 
-    npm publish
+#### Properties
+
+##### `images: EncodedImage[]`
+
+Required. An array of `EncodedImage` objects representing images to upload.
+
+### `EncodedImage`
+
+#### Properties
+
+##### `base64Image: string`
+
+Required. The base64-encoded representation of the bytes representing the image. The image should be in one of the supported formats, such as JPEG or PNG.
+
+##### `imageSubject: string`
+
+Required. The subject of the image, such as `document_front`, `document_back`. See the [API documentation](https://docs.berbix.com/reference/uploadimages) for other supported values.
+
+##### `format: string`
+
+Optional. The format of the image. Acceptable values at time of writing are `"image/jpeg"` or `"image/jpg"` or `"image/png"`.
+Reach out to success@berbix.com if you need support for another image format.
+
+### `IssueDetails`
+
+#### Properties
+
+Some properties may not be present, even if the corresponding issue appears in `issues`.
+
+##### `unsupportedIdType: {visaPageOfPassport: boolean | undefined} | undefined`
+
+May be present if the `unsupported_id_type` issue appears in the `issues` array in the API response.
+The `visaPageOfPassport` property will be present and set to `true` if Berbix believes that the image uploaded is of the
+visa page of the passport, rather than the photo ID page Berbix expects.
+
+## Publishing
+```shell
+npm publish
+```
+
+[flags-docs]: https://docs.berbix.com/docs/id-flags
+[upload-docs]: https://docs.berbix.com/reference/uploadimages
