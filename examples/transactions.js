@@ -9,40 +9,17 @@ async function uploadPassport() {
       customerUid: "example upload UID",
       templateKey: process.env.BERBIX_TEMPLATE_KEY,
       apiOnlyOpts: {idType: "P"},
-      // TODO(chris) remove after testing
+      // Requires using a template that has been configured to allow biometric consent to be
+      // sent via API.
       consentsToAutomatedFacialRecognition: true,
     });
 
     const passportFilePath = process.env.BERBIX_EXAMPLE_PASSPORT_PATH;
-    fs.readFile(passportFilePath, {encoding: "base64"}, async (err, data) => {
-      if (err) {
-        throw err;
-      }
-
-      try {
-        const resp = await client.uploadImages(tokens, {
-          images: [
-            new EncodedImage(data, "document_front", "image/jpeg")
-          ]
-        });
-
-        console.log("got response", resp)
-        if (resp.nextStep === "done") {
-          console.log("no more images expected, we're done")
-        } else {
-          console.log(`got nextStep === ${resp.nextStep}`)
-        }
-      } catch (e) {
-        switch (e.status) {
-          case 409:
-            console.log("go a conflict error response", e)
-            console.log(`unexpected state, nextStep: ${e.nextStep}`);
-            break;
-          default:
-            console.log("got an error response", e)
-        }
-      }
-    })
+    const selfiePath = process.env.BERBIX_EXAMPLE_SELFIE_PATH;
+    const passportData = fs.readFileSync(passportFilePath, {encoding: "base64"})
+    const selfieData = fs.readFileSync(selfiePath, {encoding: "base64"})
+    await upload(client, tokens, "document_front", passportData)
+    await upload(client, tokens, "selfie_front", selfieData)
   } catch (e) {
     console.log(e);
   }
@@ -57,6 +34,32 @@ function createClient() {
   console.log("created client");
   return client;
 
+}
+
+async function upload(client, tokens, subject, data) {
+  try {
+    const resp = await client.uploadImages(tokens, {
+      images: [
+        new EncodedImage(data, subject, "image/jpeg")
+      ]
+    });
+
+    console.log("got response", resp)
+    if (resp.nextStep === "done") {
+      console.log("no more images expected, we're done")
+    } else {
+      console.log(`got nextStep === ${resp.nextStep}`)
+    }
+  } catch (e) {
+    switch (e.status) {
+      case 409:
+        console.log("go a conflict error response", e)
+        console.log(`unexpected state, nextStep: ${e.nextStep}`);
+        break;
+      default:
+        console.log("got an error response", e)
+    }
+  }
 }
 
 async function createTranasctions() {
