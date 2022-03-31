@@ -221,6 +221,12 @@ Required. The subject of the image, such as `document_front`, `document_back`. S
 Optional. The format of the image. Acceptable values at time of writing are `"image/jpeg"` or `"image/jpg"` or `"image/png"`.
 Reach out to success@berbix.com if you need support for another image format.
 
+##### `supplementaryData:  {extractedBarcode: {barcodeType: string, extractedData: string}} | undefined`
+
+Optional. If data has already been extracted from a barcode in the image, this property may be provided.
+The only supported value for `barcodeType` as of writing is `pdf417`.
+The `extractedData` property should hold the base64-encoded data that's been extracted from the barcode.
+
 ### `IssueDetails`
 
 #### Properties

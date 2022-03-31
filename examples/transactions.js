@@ -2,7 +2,30 @@ const berbix = require("../lib/berbix");
 const fs = require('fs');
 const {EncodedImage} = require("../lib/berbix");
 
-async function uploadPassport() {
+async function uploadBarcodeWithSupplement() {
+  const client = createClient();
+  try {
+    const tokens = await client.createApiOnlyTransaction({
+      customerUid: "example barcode UID",
+      templateKey: process.env.BERBIX_BARCODE_SCAN_TEMPLATE_KEY,
+      apiOnlyOpts: {idType: "DL"},
+    });
+
+    const driverLicenseFilePath = process.env.BERBIX_EXAMPLE_DL_PATH;
+    const supplementaryData = {
+      extractedBarcode: {
+        barcodeType: 'pdf417',
+        extractedData: process.env.BERBIX_EXAMPLE_BARCODE_PAYLOAD
+      }
+    }
+    const dlData = fs.readFileSync(driverLicenseFilePath, {encoding: "base64"})
+    await upload(client, tokens, "document_barcode", dlData, supplementaryData)
+  } catch(e) {
+    console.log(e);
+  }
+}
+
+async function uploadPassportAndSelfie() {
   const client = createClient();
   try {
     const tokens = await client.createApiOnlyTransaction({
@@ -36,11 +59,11 @@ function createClient() {
 
 }
 
-async function upload(client, tokens, subject, data) {
+async function upload(client, tokens, subject, data, supplementaryData) {
   try {
     const resp = await client.uploadImages(tokens, {
       images: [
-        new EncodedImage(data, subject, "image/jpeg")
+        new EncodedImage(data, subject, "image/jpeg", supplementaryData)
       ]
     });
 
@@ -62,7 +85,7 @@ async function upload(client, tokens, subject, data) {
   }
 }
 
-async function createTranasctions() {
+async function createTransactions() {
   console.log("starting...");
   const client = createClient()
   const templateKey = process.env.BERBIX_NON_API_ONLY_TEMPLATE_KEY;
@@ -112,7 +135,7 @@ async function createTranasctions() {
 
 try {
   console.log("starting example")
-  uploadPassport();
+  uploadBarcodeWithSupplement();
 } catch (e) {
   console.log("error thrown", e);
 }
