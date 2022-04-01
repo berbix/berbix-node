@@ -66,7 +66,7 @@ Supported `options` properties:
 
 ##### `createTransaction(options: object): Tokens`
 
-Creates a transaction within Berbix to initialize the client SDK. Typically after creating
+Creates a transaction within Berbix to initialize the client SDK. Typically, after creating
 a transaction, you will want to store the refresh token in your database associated with the
 currently active user session.
 
@@ -147,14 +147,14 @@ Parameters:
 
 #### `uploadImage(tokens: Tokens, imageUploadOpts: ImageUploadOpts): { nextStep: string, previewFlags: string[] }`
 
-Upload an image for a transaction as part of an [API-only integration](https://docs.berbix.com/docs/api-only-integration-guide).
+Upload an image for a transaction as part of an [API integration](https://docs.berbix.com/docs/api-only-integration-guide).
 The `images` property of the `imageUploadOpts` is required.
 
 The returned object will have the following properties if the image could be processed by the API and the API returns a 200 status code:
  - `nextStep: string` -  A string indicating what the next upload expected by the API is. See the [API documentation for uploads][upload-docs].
  - `issues: string[]` - A list of issues detected with the image. This can be used to understand why an image was not accepted
     and potentially coach end users on taking another photo if the `nextStep` indicates that another photo of the same subject
-    should be uploaded again. See the [API-Only Integration Guide](https://docs.berbix.com/docs/api-only-integration-guide#issues)
+    should be uploaded again. See the [API Integration Guide](https://docs.berbix.com/docs/api-only-integration-guide#issues)
     for a list of potential issues.
  - `issueDetails: IssueDetails` - Extra details on the issue(s) detected. See [IssueDetails](#issuedetails) below.
 
@@ -165,6 +165,20 @@ This method may throw an object containing the following properties if there was
  - `error: string` - An error message.
  - `nextStep: string | undefined` - Only present for 409 ("Conflict") responses. Indicates the next expected step. See the [API documentation for uploads][upload-docs].
  - `response: object` - The parsed JSON response body from the API, as [described in the documentation for the endpoint][upload-docs].
+
+#### `uploadIdScan(tokens: string, idScanOpts: {idScans: []{scanType: string, extractedData: string}})`
+
+Upload barcode payload(s) for a transaction as part of an [API integration](https://docs.berbix.com/docs/api-only-integration-guide).
+
+While not as capable at catching fraud as `uploadImage()`, this endpoint can be used for cases where only the payload
+from a PDF417 barcode is available -- for example, if a barcode scanner is being used.
+
+The `scanType` property in the `idScanOpts` passed describes the type of barcode being processed. As of writing, `'pdf417'`
+is the only supported value.
+
+The `extractedData` should have the base 64 encoded bytes extracted from the barcode.
+
+The types of objects returned and thrown by `uploadIdScan()` are the same as for `uploadImage()`.
 
 ### `Tokens`
 

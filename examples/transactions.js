@@ -19,8 +19,38 @@ async function uploadBarcodeWithSupplement() {
       }
     }
     const dlData = fs.readFileSync(driverLicenseFilePath, {encoding: "base64"})
-    await upload(client, tokens, "document_barcode", dlData, supplementaryData)
-  } catch(e) {
+    await uploadImage(client, tokens, "document_barcode", dlData, supplementaryData)
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function uploadIdScan() {
+  const client = createClient();
+  try {
+    const tokens = await client.createApiOnlyTransaction({
+      customerUid: "example barcode payload UID",
+      templateKey: process.env.BERBIX_BARCODE_SCAN_TEMPLATE_KEY,
+      apiOnlyOpts: {idType: "DL"},
+    });
+
+    // should be base64-encoded
+    const extractedData = process.env.BERBIX_EXAMPLE_BARCODE_PAYLOAD;
+    try {
+      const resp = await client.uploadIdScan(tokens, {
+        idScans: [
+          {
+            scanType: 'pdf417',
+            extractedData: extractedData,
+          }
+        ]
+      });
+
+      console.log("got response", resp)
+    } catch (e) {
+      console.log("got an error response", e)
+    }
+  } catch (e) {
     console.log(e);
   }
 }
@@ -41,8 +71,8 @@ async function uploadPassportAndSelfie() {
     const selfiePath = process.env.BERBIX_EXAMPLE_SELFIE_PATH;
     const passportData = fs.readFileSync(passportFilePath, {encoding: "base64"})
     const selfieData = fs.readFileSync(selfiePath, {encoding: "base64"})
-    await upload(client, tokens, "document_front", passportData)
-    await upload(client, tokens, "selfie_front", selfieData)
+    await uploadImage(client, tokens, "document_front", passportData)
+    await uploadImage(client, tokens, "selfie_front", selfieData)
   } catch (e) {
     console.log(e);
   }
@@ -59,7 +89,7 @@ function createClient() {
 
 }
 
-async function upload(client, tokens, subject, data, supplementaryData) {
+async function uploadImage(client, tokens, subject, data, supplementaryData) {
   try {
     const resp = await client.uploadImages(tokens, {
       images: [
@@ -134,7 +164,7 @@ async function createTransactions() {
 }
 
 try {
-  console.log("starting example")
+  console.log("starting example");
   uploadBarcodeWithSupplement();
 } catch (e) {
   console.log("error thrown", e);
