@@ -66,7 +66,7 @@ Supported `options` properties:
 
 ##### `createTransaction(options: object): Tokens`
 
-Creates a transaction within Berbix to initialize the client SDK. Typically after creating
+Creates a transaction within Berbix to initialize the client SDK. Typically, after creating
 a transaction, you will want to store the refresh token in your database associated with the
 currently active user session.
 
@@ -76,6 +76,9 @@ Supported options:
 - `phone` - Previously verified phone number for a user.
 - `customerUid` - An ID or identifier for the user in your system.
 - `templateKey` - The template key for this transaction.
+- `consentsToAutomatedFacialRecognition` - Indicates that the end user has already consented to the use of automated
+  facial recognition. Reach out to Berbix if you need to pass user consent through the API, as the use of this option
+  is disallowed by default.
 - Deprecated: `hostedOptions` - Optional configuration object for creating hosted transactions. The `hostedOptions` object can optionally include the following fields:
   - `completionEmail` - Email address to which completion alerts will be sent for this transaction.
   - `redirectUrl` - URL to redirect the user to after they complete the transaction. If not specified, the URL specified in the Berbix dashboard will be used instead.
@@ -90,6 +93,10 @@ Similar to `createTransaction()`, but used to create a transaction to be used as
 Supported options:
 - `customerUid` - An ID or identifier for the user in your system.
 - `templateKey` - The template key for this transaction.
+- `consentsToAutomatedFacialRecognition` - Indicates that the user has already consented to the use of automated
+  facial recognition. Berbix cannot determine if a selfie matches and ID for selfies uploaded through the API if this
+  option is not set to `true`. Reach out to Berbix if you need to pass user consent through the API, as the use of this option
+  is disallowed by default.
 - `apiOnlyOpts` - Object with the following properties
   - `idType` - (Optional) the type of ID that will be uploaded for this transaction. You can see the supported values in [API documentation](https://docs.berbix.com/reference/createtransaction) for the `api_only_options` under the body params for creating a transaction.
   - `idCountry` - (Optional) the two-letter country code (ISO 3166-1 alpha-2) for the country that issued the ID that will be uploaded.
@@ -138,14 +145,14 @@ Parameters:
 
 #### `uploadImage(tokens: Tokens, imageUploadOpts: ImageUploadOpts): { nextStep: string, previewFlags: string[] }`
 
-Upload an image for a transaction as part of an [API-only integration](https://docs.berbix.com/docs/api-only-integration-guide).
+Upload an image for a transaction as part of an [API integration](https://docs.berbix.com/docs/api-only-integration-guide).
 The `images` property of the `imageUploadOpts` is required.
 
 The returned object will have the following properties if the image could be processed by the API and the API returns a 200 status code:
  - `nextStep: string` -  A string indicating what the next upload expected by the API is. See the [API documentation for uploads][upload-docs].
  - `issues: string[]` - A list of issues detected with the image. This can be used to understand why an image was not accepted
     and potentially coach end users on taking another photo if the `nextStep` indicates that another photo of the same subject
-    should be uploaded again. See the [API-Only Integration Guide](https://docs.berbix.com/docs/api-only-integration-guide#issues)
+    should be uploaded again. See the [API Integration Guide](https://docs.berbix.com/docs/api-only-integration-guide#issues)
     for a list of potential issues.
  - `issueDetails: IssueDetails` - Extra details on the issue(s) detected. See [IssueDetails](#issuedetails) below.
 
@@ -156,6 +163,20 @@ This method may throw an object containing the following properties if there was
  - `error: string` - An error message.
  - `nextStep: string | undefined` - Only present for 409 ("Conflict") responses. Indicates the next expected step. See the [API documentation for uploads][upload-docs].
  - `response: object` - The parsed JSON response body from the API, as [described in the documentation for the endpoint][upload-docs].
+
+#### `uploadIdScan(tokens: string, idScanOpts: {idScans: []{scanType: string, extractedData: string}})`
+
+Upload barcode payload(s) for a transaction as part of an [API integration](https://docs.berbix.com/docs/api-only-integration-guide).
+
+While not as capable at catching fraud as `uploadImage()`, this endpoint can be used for cases where only the payload
+from a PDF417 barcode is available -- for example, if a barcode scanner is being used.
+
+The `scanType` property in the `idScanOpts` passed describes the type of barcode being processed. As of writing, `'pdf417'`
+is the only supported value.
+
+The `extractedData` should have the base 64 encoded bytes extracted from the barcode.
+
+The types of objects returned and thrown by `uploadIdScan()` are the same as for `uploadImage()`.
 
 ### `Tokens`
 
@@ -211,6 +232,12 @@ Required. The subject of the image, such as `document_front`, `document_back`. S
 
 Optional. The format of the image. Acceptable values at time of writing are `"image/jpeg"` or `"image/jpg"` or `"image/png"`.
 Reach out to success@berbix.com if you need support for another image format.
+
+##### `supplementaryData:  {extractedBarcode: {barcodeType: string, extractedData: string}} | undefined`
+
+Optional. If data has already been extracted from a barcode in the image, this property may be provided.
+The only supported value for `barcodeType` as of writing is `pdf417`.
+The `extractedData` property should hold the base64-encoded data that's been extracted from the barcode.
 
 ### `IssueDetails`
 

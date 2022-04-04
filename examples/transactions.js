@@ -2,45 +2,77 @@ const berbix = require("../lib/berbix");
 const fs = require('fs');
 const {EncodedImage} = require("../lib/berbix");
 
-async function uploadPassport() {
+async function uploadBarcodeWithSupplement() {
+  const client = createClient();
+  try {
+    const tokens = await client.createApiOnlyTransaction({
+      customerUid: "example barcode UID",
+      templateKey: process.env.BERBIX_BARCODE_SCAN_TEMPLATE_KEY,
+      apiOnlyOpts: {idType: "DL"},
+    });
+
+    const driverLicenseFilePath = process.env.BERBIX_EXAMPLE_DL_PATH;
+    const supplementaryData = {
+      extractedBarcode: {
+        barcodeType: 'pdf417',
+        extractedData: process.env.BERBIX_EXAMPLE_BARCODE_PAYLOAD
+      }
+    }
+    const dlData = fs.readFileSync(driverLicenseFilePath, {encoding: "base64"})
+    await uploadImage(client, tokens, "document_barcode", dlData, supplementaryData)
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function uploadIdScan() {
+  const client = createClient();
+  try {
+    const tokens = await client.createApiOnlyTransaction({
+      customerUid: "example barcode payload UID",
+      templateKey: process.env.BERBIX_BARCODE_SCAN_TEMPLATE_KEY,
+      apiOnlyOpts: {idType: "DL"},
+    });
+
+    // should be base64-encoded
+    const extractedData = process.env.BERBIX_EXAMPLE_BARCODE_PAYLOAD;
+    try {
+      const resp = await client.uploadIdScan(tokens, {
+        idScans: [
+          {
+            scanType: 'pdf417',
+            extractedData: extractedData,
+          }
+        ]
+      });
+
+      console.log("got response", resp)
+    } catch (e) {
+      console.log("got an error response", e)
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function uploadPassportAndSelfie() {
   const client = createClient();
   try {
     const tokens = await client.createApiOnlyTransaction({
       customerUid: "example upload UID",
       templateKey: process.env.BERBIX_TEMPLATE_KEY,
-      apiOnlyOpts: {idType: "P"}
+      apiOnlyOpts: {idType: "P"},
+      // Requires using a template that has been configured to allow biometric consent to be
+      // sent via API.
+      consentsToAutomatedFacialRecognition: true,
     });
 
     const passportFilePath = process.env.BERBIX_EXAMPLE_PASSPORT_PATH;
-    fs.readFile(passportFilePath, {encoding: "base64"}, async (err, data) => {
-      if (err) {
-        throw err;
-      }
-
-      try {
-        const resp = await client.uploadImages(tokens, {
-          images: [
-            new EncodedImage(data, "document_front", "image/jpeg")
-          ]
-        });
-
-        console.log("got response", resp)
-        if (resp.nextStep === "done") {
-          console.log("no more images expected, we're done")
-        } else {
-          console.log(`got nextStep === ${resp.nextStep}`)
-        }
-      } catch (e) {
-        switch (e.status) {
-          case 409:
-            console.log("go a conflict error response", e)
-            console.log(`unexpected state, nextStep: ${e.nextStep}`);
-            break;
-          default:
-            console.log("got an error response", e)
-        }
-      }
-    })
+    const selfiePath = process.env.BERBIX_EXAMPLE_SELFIE_PATH;
+    const passportData = fs.readFileSync(passportFilePath, {encoding: "base64"})
+    const selfieData = fs.readFileSync(selfiePath, {encoding: "base64"})
+    await uploadImage(client, tokens, "document_front", passportData)
+    await uploadImage(client, tokens, "selfie_front", selfieData)
   } catch (e) {
     console.log(e);
   }
@@ -57,7 +89,33 @@ function createClient() {
 
 }
 
-async function createTranasctions() {
+async function uploadImage(client, tokens, subject, data, supplementaryData) {
+  try {
+    const resp = await client.uploadImages(tokens, {
+      images: [
+        new EncodedImage(data, subject, "image/jpeg", supplementaryData)
+      ]
+    });
+
+    console.log("got response", resp)
+    if (resp.nextStep === "done") {
+      console.log("no more images expected, we're done")
+    } else {
+      console.log(`got nextStep === ${resp.nextStep}`)
+    }
+  } catch (e) {
+    switch (e.status) {
+      case 409:
+        console.log("go a conflict error response", e)
+        console.log(`unexpected state, nextStep: ${e.nextStep}`);
+        break;
+      default:
+        console.log("got an error response", e)
+    }
+  }
+}
+
+async function createTransactions() {
   console.log("starting...");
   const client = createClient()
   const templateKey = process.env.BERBIX_NON_API_ONLY_TEMPLATE_KEY;
@@ -106,8 +164,8 @@ async function createTranasctions() {
 }
 
 try {
-  console.log("starting example")
-  uploadPassport();
+  console.log("starting example");
+  uploadBarcodeWithSupplement();
 } catch (e) {
   console.log("error thrown", e);
 }
