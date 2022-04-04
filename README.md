@@ -95,9 +95,8 @@ Supported options:
 - `templateKey` - The template key for this transaction.
 - `consentsToAutomatedFacialRecognition` - Indicates that the user has already consented to the use of automated
   facial recognition. Berbix cannot determine if a selfie matches and ID for selfies uploaded through the API if this
-  option is not set to `true`. This options can only be used if the "Use customer seeded biometric consent" option is
-  enabled on the template used for this transaction. Reach out to Berbix if you need to the toggle for that option to
-  appear in your template settings, as the option is hidden by default.
+  option is not set to `true`. Reach out to Berbix if you need to pass user consent through the API, as the use of this option
+  is disallowed by default.
 - `apiOnlyOpts` - Object with the following properties
   - `idType` - (Optional) the type of ID that will be uploaded for this transaction. You can see the supported values in [API documentation](https://docs.berbix.com/reference/createtransaction) for the `api_only_options` under the body params for creating a transaction.
   - `idCountry` - (Optional) the two-letter country code (ISO 3166-1 alpha-2) for the country that issued the ID that will be uploaded.
