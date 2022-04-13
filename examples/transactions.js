@@ -78,10 +78,31 @@ async function uploadPassportAndSelfie() {
   }
 }
 
+
+async function uploadPassport() {
+  const client = createClient();
+  try {
+    const tokens = await client.createApiOnlyTransaction({
+      customerUid: "example upload UID",
+      templateKey: process.env.BERBIX_TEMPLATE_KEY,
+      apiOnlyOpts: {idType: "P"},
+    });
+
+    const passportFilePath = process.env.BERBIX_EXAMPLE_PASSPORT_PATH;
+    const passportData = fs.readFileSync(passportFilePath, {encoding: "base64"})
+    await uploadImage(client, tokens, "document_front", passportData)
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 function createClient() {
   const client = new berbix.Client({
     apiSecret: process.env.BERBIX_DEMO_CLIENT_SECRET,
     apiHost: process.env.BERBIX_DEMO_API_HOST,
+    httpClientOpts: {
+      timeoutMs: 10000,
+    }
   });
 
   console.log("created client");
@@ -165,7 +186,7 @@ async function createTransactions() {
 
 try {
   console.log("starting example");
-  uploadBarcodeWithSupplement();
+  uploadPassport();
 } catch (e) {
   console.log("error thrown", e);
 }

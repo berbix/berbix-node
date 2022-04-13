@@ -63,6 +63,10 @@ Supported `options` properties:
   ```
   request(host: string, method: string, path: string, headers: object, data: object): Promise<{statusCode: number, parsedBody: object}>
   ```
+- `httpClientOpts`: A optional configuration object for the default HTTP client. It will be ignored if a custom `httpClient` is used.
+   The following properties of `httpClientOpts` can be configured:
+    - `timeoutMs`: `number` -- The number of milliseconds to time out HTTP calls. If the timeout is hit, an object
+       with the a `timedOut` property set to `true` will be thrown.
 
 ##### `createTransaction(options: object): Tokens`
 
@@ -157,9 +161,10 @@ The returned object will have the following properties if the image could be pro
  - `issueDetails: IssueDetails` - Extra details on the issue(s) detected. See [IssueDetails](#issuedetails) below.
 
 This method may throw an object containing the following properties if there was an error uploading the image:
- - `status: number` - The HTTP status code returned by the API. As documented in [documentation for uploads endpoint][upload-docs],
+ - `status: number | null` - The HTTP status code returned by the API. As documented in [documentation for uploads endpoint][upload-docs],
    different 4XX status codes can indicate different problems with the upload, so thrown objects should be caught and
-   the `status` property inspected by the caller to determine how to proceed.
+   the `status` property inspected by the caller to determine how to proceed. This will be set to `null` if a timeout
+   is configured for the HTTP client and the call times out.
  - `error: string` - An error message.
  - `nextStep: string | undefined` - Only present for 409 ("Conflict") responses. Indicates the next expected step. See the [API documentation for uploads][upload-docs].
  - `response: object` - The parsed JSON response body from the API, as [described in the documentation for the endpoint][upload-docs].
