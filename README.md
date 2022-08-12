@@ -36,6 +36,9 @@ var transactionTokens = await client.createTransaction({
 })
 ```
 
+Note that `createApiOnlyTransaction` and `createHostedTransaction` should be used to create API-only and hosted transactions respectively.
+These methods are documented [below](#methods).
+
 ### Create tokens from refresh token
 ```js
 // Load refresh token from database
