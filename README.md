@@ -150,7 +150,7 @@ Parameters:
 - `flags: string[]` - An optional list of flags to associate with the transaction (independent of the payload's contents), e.g. ["id_under_18", "id_under_21"]. See [our flags documentation][flags-docs] for a list of flags.
 - `overrideFields: { string: string }` - An optional mapping from a [transaction field](https://docs.berbix.com/reference#gettransactionmetadata) to the desired override value, e.g. `params.overrideFields = { "date_of_birth": "2000-12-09" } `
 
-#### `uploadImage(tokens: Tokens, imageUploadOpts: ImageUploadOpts): { nextStep: string, previewFlags: string[] }`
+#### `uploadImages(tokens: Tokens, imageUploadOpts: ImageUploadOpts): { nextStep: string, previewFlags: string[] }`
 
 Upload an image for a transaction as part of an [API integration](https://docs.berbix.com/docs/api-only-integration-guide).
 The `images` property of the `imageUploadOpts` is required.
@@ -176,7 +176,7 @@ This method may throw an object containing the following properties if there was
 
 Upload barcode payload(s) for a transaction as part of an [API integration](https://docs.berbix.com/docs/api-only-integration-guide).
 
-While not as capable at catching fraud as `uploadImage()`, this endpoint can be used for cases where only the payload
+While not as capable at catching fraud as `uploadImages()`, this endpoint can be used for cases where only the payload
 from a PDF417 barcode is available -- for example, if a barcode scanner is being used.
 
 The `scanType` property in the `idScanOpts` passed describes the type of barcode being processed. As of writing, `'pdf417'`
@@ -184,7 +184,7 @@ is the only supported value.
 
 The `extractedData` should have the base 64 encoded bytes extracted from the barcode.
 
-The types of objects returned and thrown by `uploadIdScan()` are the same as for `uploadImage()`.
+The types of objects returned and thrown by `uploadIdScan()` are the same as for `uploadImages()`.
 
 ### `Tokens`
 
